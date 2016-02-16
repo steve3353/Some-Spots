@@ -17,7 +17,6 @@ public class MainFragment extends Fragment {
 
     private ArrayAdapter<String> mainItemAdapter;
 
-
     public MainFragment(){
 
     }
@@ -40,7 +39,6 @@ public class MainFragment extends Fragment {
 
         rootView.setBackgroundResource(R.drawable.mainbackground);
 
-
         List<String> mainItems = new ArrayList<String>();
 
         mainItems.add(mainItem1);
@@ -60,15 +58,11 @@ public class MainFragment extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
                 Intent openMapIntent = new Intent(getActivity(), DisplayMapActivity.class).putExtra(Intent.EXTRA_TEXT, mainItemAdapter.getItem(i));
                 startActivity(openMapIntent);
-
             }
         });
-
         return rootView;
-
     }
 
 
