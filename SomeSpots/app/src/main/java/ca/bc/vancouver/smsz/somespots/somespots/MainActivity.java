@@ -10,15 +10,10 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.drive.Drive;
 import com.google.android.gms.location.LocationServices;
 
-
 public class MainActivity extends ActionBarActivity implements GoogleApiClient.ConnectionCallbacks,GoogleApiClient.OnConnectionFailedListener
 {
-
-
     private static final String TAG = "GooglePlayServicesActivity";
-
     private static final String KEY_IN_RESOLUTION = "is_in_resolution";
-
 
     /**
      * Google API client.
@@ -54,14 +49,10 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
         int code = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
 
         if(ConnectionResult.SUCCESS == code){
-
-
+            
         }else{
             GooglePlayServicesUtil.getErrorDialog(code,this,3 );
         }
-
-
-
     }
 
     @Override
@@ -77,11 +68,6 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
             mGoogleApiClient.disconnect();
         }
     }
-
-
-
-
-
 
 //    @Override
 //    public boolean onCreateOptionsMenu(Menu menu) {
@@ -103,24 +89,18 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
 
     @Override
     public void onConnected(Bundle bundle) {
-
         if (mLastLocation!= null){
             mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-
         }
-
     }
 
     @Override
     public void onConnectionSuspended(int i) {
         mGoogleApiClient.connect();
-
     }
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
-
-
     }
 
 }
