@@ -41,11 +41,8 @@ import ca.bc.vancouver.smsz.somespots.somespots.ObjectModels.Park;
 public class DisplayMapActivity extends FragmentActivity implements OnMapReadyCallback,GoogleApiClient.ConnectionCallbacks,GoogleApiClient.OnConnectionFailedListener {
 
     private GoogleMap map;
-
     private Location mLastLocation;
-
     private GoogleApiClient mGoogleApiClient;
-
 
     private List<Fountain> fountainList = new ArrayList<Fountain>();
     private List<BikeRack> bikeRackList = new ArrayList<BikeRack>();
@@ -67,10 +64,6 @@ public class DisplayMapActivity extends FragmentActivity implements OnMapReadyCa
                 .addOnConnectionFailedListener(this)
                 .addApi(LocationServices.API)
                 .build();
-
-
-
-
 
         Intent intent = this.getIntent();
         if(intent != null && intent.hasExtra(Intent.EXTRA_TEXT)){
@@ -100,14 +93,8 @@ public class DisplayMapActivity extends FragmentActivity implements OnMapReadyCa
             }
 
         }
-
-
         MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-
-
-
-
     }
 
     @Override
@@ -124,8 +111,6 @@ public class DisplayMapActivity extends FragmentActivity implements OnMapReadyCa
         }
     }
 
-
-
     @Override
     public void onMapReady(GoogleMap googleMap) {
         LatLng initialLocation;
@@ -136,47 +121,33 @@ public class DisplayMapActivity extends FragmentActivity implements OnMapReadyCa
         initialLocation = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
         else
         initialLocation= new LatLng(49.2827, -123.121);
-
+        
         UiSettings uiSettings = map.getUiSettings();
         uiSettings.setZoomControlsEnabled(true);
         uiSettings.setCompassEnabled(true);
-
         map.setMyLocationEnabled(true);
 
         if(whichItem != null){
             switch(whichItem){
                 case "Water Fountains (City of Vancouver) ":
-
                     map.animateCamera(CameraUpdateFactory.newLatLngZoom(initialLocation, 15) );
                     break;
                 case "Parks with Public Washrooms (City of Vancouver)":
-
                     map.animateCamera(CameraUpdateFactory.newLatLngZoom(initialLocation, 14) );
                     break;
                 case "Bike Racks (City of Vancouver)" :
-
                     map.animateCamera(CameraUpdateFactory.newLatLngZoom(initialLocation, 16) );
                     break;
                 case "Bikeways in City of Vancouver" :
-
                     map.animateCamera(CameraUpdateFactory.newLatLngZoom(initialLocation, 14) );
-
                     break;
                 case "Bike Pumps in City of Vancouver" :
-
                     map.animateCamera(CameraUpdateFactory.newLatLngZoom(initialLocation, 12) );
                     break;
             }
         }
-
-
-
-
-
         //map.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
         //map.addMarker(new MarkerOptions().title("Vancouver").snippet("LALALALAL").position(vancouver));
-
-
     }
 
     public class ReadBikeWayFileTask extends AsyncTask<Void, Void, Integer> {
@@ -184,15 +155,12 @@ public class DisplayMapActivity extends FragmentActivity implements OnMapReadyCa
         @Override
         protected Integer doInBackground(Void... voids) {
             readBikeWayFile();
-
             return 0;
         }
 
         @Override
         protected void onPostExecute(Integer val) {
-
             startDrawingBikeWay();
-
         }
 
         public void startDrawingBikeWay(){
@@ -204,14 +172,10 @@ public class DisplayMapActivity extends FragmentActivity implements OnMapReadyCa
                         e.printStackTrace();
                     }
                 }
-
             }else {
                 startDrawingBikeWay();
             }
-
         }
-
-
 
         public void readBikeWayFile() {
             try {
@@ -225,44 +189,28 @@ public class DisplayMapActivity extends FragmentActivity implements OnMapReadyCa
                     byteArrayOutputStream.write(abyte);
                     abyte = resourceReader.read();
                 }
-
+                
                 resourceReader.close();
-
                 String in = byteArrayOutputStream.toString();
-
                 jsonBikeWay = in;
-
-
-
-
-
+                
             } catch (FileNotFoundException e) {
-
                 e.printStackTrace();
-
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
 
         public void drawBikeWayPolyline( String in) throws JSONException{
-
             JSONObject jsonFile = new JSONObject(in);
             JSONObject jsonkml = jsonFile.getJSONObject("kml");
-
             JSONObject jsonDocument = jsonkml.getJSONObject("Document");
-
             JSONObject jsonFolder = jsonDocument.getJSONObject("Folder");
-
             JSONArray jsonPlacemark = jsonFolder.getJSONArray("Placemark");
-
 
             for(int l =0 ; l< jsonPlacemark.length() ; l++) {
                 JSONObject jsonPATH = jsonPlacemark.getJSONObject(l);
-
                 JSONObject multigeometry = jsonPATH.getJSONObject("MultiGeometry");
-
-
 
                 try {
                     List<Double> latList = new ArrayList<Double>();
@@ -286,10 +234,7 @@ public class DisplayMapActivity extends FragmentActivity implements OnMapReadyCa
                     }
                     Polyline polyline = map.addPolyline(wayOptions);
 
-
-
                 } catch(JSONException e){
-
                     JSONArray linestrings = multigeometry.getJSONArray("LineString");
                     for (int i = 0; i < linestrings.length(); i++) {
                         List<Double> latList = new ArrayList<Double>();
@@ -313,19 +258,11 @@ public class DisplayMapActivity extends FragmentActivity implements OnMapReadyCa
                             wayOptions.add(new LatLng(latList.get(x), lonList.get(x)));
                         }
                         Polyline polyline = map.addPolyline(wayOptions);
-
-
-
-
                     }
                 }
-
-
             }
         }
-
     }
-
 
     public class ReadBikeRackFileTask extends AsyncTask<Void, Void, Integer> {
 
@@ -342,7 +279,6 @@ public class DisplayMapActivity extends FragmentActivity implements OnMapReadyCa
         @Override
         protected void onPostExecute(Integer val) {
             startPlottingBikeRack();
-
         }
 
         public void startPlottingBikeRack(){
@@ -351,9 +287,7 @@ public class DisplayMapActivity extends FragmentActivity implements OnMapReadyCa
                     for (BikeRack b : bikeRackList) {
                         map.addMarker(new MarkerOptions().title("Bike Rack").snippet("Location: " + b.getLocation()).position(b.getLatLng()));
                     }
-
                 }
-
             }else{
                 startPlottingBikeRack();
             }
@@ -376,7 +310,6 @@ public class DisplayMapActivity extends FragmentActivity implements OnMapReadyCa
 
                 String in = byteArrayOutputStream.toString();
 
-
                 JSONArray jsonBikeRackList = new JSONArray(in);
                 for (int i = 0; i < jsonBikeRackList.length(); i++) {
                     JSONObject jsonBikeRack = jsonBikeRackList.getJSONObject(i);
@@ -386,23 +319,15 @@ public class DisplayMapActivity extends FragmentActivity implements OnMapReadyCa
 
                     BikeRack bikeRack = new BikeRack(latLng, location);
                     bikeRackList.add(bikeRack);
-
                 }
-
 
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
-
-
             } catch (IOException e) {
                 e.printStackTrace();
-
             }
         }
-
-
     }
-
 
     public class ReadFountainFileTask extends AsyncTask<Void, Void, Integer> {
 
@@ -411,7 +336,6 @@ public class DisplayMapActivity extends FragmentActivity implements OnMapReadyCa
             try {
                 readFountainFile();
             } catch (JSONException e) {
-
                 e.printStackTrace();
             }
             return 0;
@@ -420,25 +344,21 @@ public class DisplayMapActivity extends FragmentActivity implements OnMapReadyCa
         @Override
         protected void onPostExecute(Integer val) {
             startPlottingFountains();
-
         }
 
         public void startPlottingFountains(){
             if (map != null) {
                 if(fountainList.size() > 0){
                     for(Fountain f : fountainList){
-
                         map.addMarker(new MarkerOptions().title("Fountain").snippet(f.getLocation()).position(f.getLatLng()));
                     }
                 }
-
             }else {
                 startPlottingFountains();
             }
         }
 
         public void readFountainFile() throws JSONException {
-
             //BufferedReader reader = null;
             try {
                 InputStream resourceReader = getResources().openRawResource(R.raw.drinking_fountains);
@@ -454,17 +374,11 @@ public class DisplayMapActivity extends FragmentActivity implements OnMapReadyCa
                     byteArrayOutputStream.write(abyte);
                     abyte = resourceReader.read();
                     // jsonFountains.append(singleline);
-
                 }
                 resourceReader.close();
                 // reader.close();
-
                 // String in = jsonFountains.toString();
-
                 String in = byteArrayOutputStream.toString();
-
-
-
 
                 JSONObject allFountains = new JSONObject(in);
                 JSONArray jsonfountainList = allFountains.getJSONArray("features");
@@ -481,24 +395,15 @@ public class DisplayMapActivity extends FragmentActivity implements OnMapReadyCa
 
                     Fountain fountain = new Fountain(latLng, location);
                     fountainList.add(fountain);
-
                 }
 
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
-
             } catch (IOException e) {
                 e.printStackTrace();
-
             }
-
-
-
-
         }
-
     }
-
 
     public class ReadBikePumpFileTask extends AsyncTask<Void, Void, Integer> {
 
@@ -507,7 +412,6 @@ public class DisplayMapActivity extends FragmentActivity implements OnMapReadyCa
             try {
                 readbikePumpFile();
             } catch (JSONException e) {
-
                 e.printStackTrace();
             }
             return 0;
@@ -515,7 +419,6 @@ public class DisplayMapActivity extends FragmentActivity implements OnMapReadyCa
         @Override
         protected void onPostExecute(Integer val) {
             startPlottingBikePump();
-
         }
 
         public void startPlottingBikePump(){
@@ -524,7 +427,6 @@ public class DisplayMapActivity extends FragmentActivity implements OnMapReadyCa
                     for (BikePump b : bikePumpList) {
                         map.addMarker(new MarkerOptions().title("Bike Pump").position(b.getLatLng()));
                     }
-
                 }
 
             }else {
@@ -553,21 +455,14 @@ public class DisplayMapActivity extends FragmentActivity implements OnMapReadyCa
                 for (int i = 0; i < jsonBikePumpList.length(); i++) {
                     JSONObject jsonBikePump = jsonBikePumpList.getJSONObject(i);
                     LatLng latLng = new LatLng(jsonBikePump.getDouble("latitude"), jsonBikePump.getDouble("longitude"));
-
-
-
                     BikePump bikePump = new BikePump(latLng);
                     bikePumpList.add(bikePump);
                 }
 
             } catch (FileNotFoundException e) {
-
                 e.printStackTrace();
-
             } catch (IOException e) {
-
                 e.printStackTrace();
-
             }
         }
     }
@@ -579,7 +474,6 @@ public class DisplayMapActivity extends FragmentActivity implements OnMapReadyCa
             try {
                 readParkWithWashroomFile();
             } catch (JSONException e) {
-
                 e.printStackTrace();
             }
             return 0;
@@ -588,7 +482,6 @@ public class DisplayMapActivity extends FragmentActivity implements OnMapReadyCa
         @Override
         protected void onPostExecute(Integer val) {
             startPlottingPark();
-
         }
 
         public void startPlottingPark(){
@@ -598,8 +491,6 @@ public class DisplayMapActivity extends FragmentActivity implements OnMapReadyCa
                         map.addMarker(new MarkerOptions().title(p.getParkName() + " Washroom Hours: ").snippet(p.getWashroomSummerHour() + ", "+ p.getWashroomWinterHour() ).position(p.getLatLng()));
                     }
                 }
-
-
             }else {
                 startPlottingPark();
             }
@@ -644,57 +535,28 @@ public class DisplayMapActivity extends FragmentActivity implements OnMapReadyCa
                     }
                     String washroomSummerHours = jsonPark.getString("WashroomSummerHours");
                     String washroomWinterHours = jsonPark.getString("WashroomWinterHours");
-
-
-
-
                     Park park = new Park(latLng, streetNum,streetName,parkName,washroomLocationInPark,washroomSummerHours,washroomWinterHours);
                     parkList.add(park);
-
                 }
-
-
             } catch (FileNotFoundException e) {
-
                 e.printStackTrace();
-
             } catch (IOException e) {
                 e.printStackTrace();
-
             }
-
         }
-
     }
-
-
-
-
-
-
-
-
-
-
 
     @Override
     public void onConnected(Bundle bundle) {
-
-
-
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-
     }
 
     @Override
     public void onConnectionSuspended(int i) {
         mGoogleApiClient.connect();
-
     }
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
-
-
     }
 }
