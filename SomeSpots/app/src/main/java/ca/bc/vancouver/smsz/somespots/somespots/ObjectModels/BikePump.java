@@ -7,10 +7,8 @@ public class BikePump {
 
     private LatLng latLng;
 
-
     public BikePump(LatLng latLng){
         this.latLng = latLng;
-
     }
 
     public LatLng getLatLng(){
